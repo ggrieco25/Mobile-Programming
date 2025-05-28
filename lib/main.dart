@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:progetto_mp/HomeScreen.dart';
+import 'HomeScreen.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TV Tracker',
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      initialRoute: '/home',
+      routes: {'/home': (_) => const HomeScreen()},
     );
   }
 }
