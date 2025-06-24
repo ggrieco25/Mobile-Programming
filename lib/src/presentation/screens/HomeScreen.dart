@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'CustomNavBar.dart';
+import '../widgets/CustomNavBar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
