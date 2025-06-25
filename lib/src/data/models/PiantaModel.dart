@@ -1,22 +1,23 @@
+import 'dart:typed_data';
 
 class Pianta {
-  int? id; // L'ID sarà autoincrementato dal DB, quindi può essere nullo
+  int? id; // L'ID sarà autoincrementato dal DB
   String nome;
   String specie;
-  String dataAcquisto; // Memorizzata come Stringa (es. 'AAAA-MM-GG')
-  String? percorsoFoto;
-  int frequenzaInnaffiatura; // in giorni
-  int frequenzaPotatura; // in giorni
-  int frequenzaRinvaso; // in giorni
+  DateTime dataAcquisto; // Salvata come ISO8601 stringa nel DB
+  Uint8List? foto; // Immagine salvata come BLOB
+  int frequenzaInnaffiatura;
+  int frequenzaPotatura;
+  int frequenzaRinvaso;
   String note;
-  String stato; // Es. "Sana", "Da controllare", "Malata"
+  String stato;
 
   Pianta({
     this.id,
     required this.nome,
     required this.specie,
     required this.dataAcquisto,
-    this.percorsoFoto,
+    this.foto,
     required this.frequenzaInnaffiatura,
     required this.frequenzaPotatura,
     required this.frequenzaRinvaso,
@@ -24,15 +25,14 @@ class Pianta {
     required this.stato,
   });
 
-  // Converte un oggetto Pianta in una Map.
-  // Le chiavi devono corrispondere ai nomi delle colonne nel database.
+  /// Converte un oggetto Pianta in una Map per il DB
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'nome': nome,
       'specie': specie,
-      'dataAcquisto': dataAcquisto,
-      'percorsoFoto': percorsoFoto,
+      'dataAcquisto': dataAcquisto.toIso8601String(),
+      'foto': foto, // Uint8List? → salvata come BLOB
       'frequenzaInnaffiatura': frequenzaInnaffiatura,
       'frequenzaPotatura': frequenzaPotatura,
       'frequenzaRinvaso': frequenzaRinvaso,
@@ -41,14 +41,14 @@ class Pianta {
     };
   }
 
-  // Estrae un oggetto Pianta da una Map.
+  /// Crea un oggetto Pianta a partire da una Map del DB
   factory Pianta.fromMap(Map<String, dynamic> map) {
     return Pianta(
       id: map['id'],
       nome: map['nome'],
       specie: map['specie'],
-      dataAcquisto: map['dataAcquisto'],
-      percorsoFoto: map['percorsoFoto'],
+      dataAcquisto: DateTime.parse(map['dataAcquisto']),
+      foto: map['foto'], // BLOB → Uint8List?
       frequenzaInnaffiatura: map['frequenzaInnaffiatura'],
       frequenzaPotatura: map['frequenzaPotatura'],
       frequenzaRinvaso: map['frequenzaRinvaso'],
