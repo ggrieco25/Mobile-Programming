@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
-import 'presentation/screens/HomeScreen.dart';
+import '../src/presentation/screens/HomeScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const PlantCareApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PlantCareApp extends StatelessWidget {
+  const PlantCareApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TV Tracker',
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/home',
-      routes: {'/home': (_) => const HomeScreen()},
+      title: 'Plant Care',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 2,
+        ),
+      ),
+      home: const HomeScreen(),
     );
   }
 }
