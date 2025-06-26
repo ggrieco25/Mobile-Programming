@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-
 import '../../data/models/PromemoriaModel.dart';
 import '../../domain/PromemoriaRepository.dart';
+import '../../data/models/PiantaModel.dart';
+import '../widgets/CustomNavBar.dart';
+import '../widgets/ListaUltimePiante.dart';
+import '../../domain/PianteRepository.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,16 +14,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Un'istanza del nostro repository. In un'app più grande, useresti un sistema
-  // di dependency injection come Riverpod o Provider per passarla.
+  // Un'istanza del repository.
   final PromemoriaRepository _promemoriaRepository = PromemoriaRepository();
+  final PiantaRepository _piantaRepository = PiantaRepository();
+
   late Future<List<Promemoria>> _futurePromemoria;
+  List<Pianta> piante = [];
 
   @override
   void initState() {
     super.initState();
     // All'avvio della schermata, chiedo al repository di caricare i promemoria.
     _futurePromemoria = _promemoriaRepository.getPromemoriaImminenti();
+    caricaPiante();
   }
 
   @override
@@ -32,22 +38,37 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('Le tue piante', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 16),
+            piante.isEmpty
+                ? const Center(child: Text('Nessuna pianta trovata.'))
+                : ListaUltimePiante(piante: piante),
             Text('Promemoria Imminenti', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 16),
             _buildPromemoriaSection(),
+            const SizedBox(height: 32)
           ],
         ),
       ),
+      bottomNavigationBar: const CustomNavBar(currentIndex: 0),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () { /* Naviga ad aggiungi pianta */ },
+        onPressed: () async {
+          /* Da implementare
+          final result = await Navigator.push(); // Vai alla schermata di aggiunta
+          if (result == true) {
+            caricaPiante(); // Ricarica solo se è stata aggiunta una pianta
+          }
+          */
+        },
+
         label: const Text('Aggiungi Pianta'),
         icon: const Icon(Icons.add),
       ),
     );
   }
 
+
   Widget _buildPromemoriaSection() {
-    // FutureBuilder è perfetto per gestire stati di caricamento, errore e successo.
     return FutureBuilder<List<Promemoria>>(
       future: _futurePromemoria,
       builder: (context, snapshot) {
@@ -67,19 +88,19 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         final promemoriaList = snapshot.data!;
-        // Usiamo ListView.builder che è più performante di una Column per liste lunghe.
-        return ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: promemoriaList.length,
-          itemBuilder: (context, index) {
-            return _buildPromemoriaCard(promemoriaList[index]);
-          },
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
+
+        return Column(
+          children: promemoriaList
+              .map((promemoria) => Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: _buildPromemoriaCard(promemoria),
+          ))
+              .toList(),
         );
       },
     );
   }
+
 
   Widget _buildPromemoriaCard(Promemoria promemoria) {
     final icona = _getIconForActivity(promemoria.attivita);
@@ -129,5 +150,12 @@ class _HomeScreenState extends State<HomeScreen> {
     if (differenza == 0) return ('Oggi', Colors.red.shade500);
     if (differenza == 1) return ('Domani', Colors.orange.shade600);
     return ('Tra $differenza gg', Colors.blueGrey.shade400);
+  }
+
+  Future<void> caricaPiante() async {
+    final risultato = await _piantaRepository.getTutteLePiante(); // Chiama il DB
+    setState(() {
+      piante = risultato; // Salva il risultato per l'interfaccia utente
+    });
   }
 }
