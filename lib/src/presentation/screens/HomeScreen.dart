@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/ListaUltimePiante.dart';
-import '../../data/local/DatabaseHelper.dart';
-import '../../data/models/PiantaModel.dart';
+import '../../data/local/database_helper.dart';
+import '../../data/models/pianta_model.dart';
 import '../widgets/CustomNavBar.dart';
 
 class HomeScreen extends StatefulWidget {

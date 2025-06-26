@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/PiantaModel.dart';
+import '../../data/models/pianta_model.dart';
 
 class ListaUltimePiante extends StatelessWidget {
   final List<Pianta> piante;
@@ -32,7 +32,7 @@ class ListaUltimePiante extends StatelessWidget {
             )
                 : const Icon(Icons.local_florist),
             title: Text(pianta.nome),
-            subtitle: Text('${pianta.specie} • ${pianta.stato}'),
+            subtitle: Text('${pianta.idSpecie} • ${pianta.stato}'),
             trailing: Text(
               '${pianta.dataAcquisto.day.toString().padLeft(2, '0')}/${pianta.dataAcquisto.month.toString().padLeft(2, '0')}/${pianta.dataAcquisto.year}',
               style: const TextStyle(fontSize: 12),
