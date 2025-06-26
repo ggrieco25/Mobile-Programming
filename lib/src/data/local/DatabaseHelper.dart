@@ -2,9 +2,8 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/PiantaModel.dart';
-
-
-// --- DATABASE HELPER CORRETTO ---
+import '../models/SpecieModel.dart';
+import '../models/CategoriaModel.dart';
 
 class DatabaseHelper {
   DatabaseHelper._privateConstructor();
@@ -62,7 +61,7 @@ class DatabaseHelper {
     await batch.commit(noResult: true);
   }
 
-  // --- CRUD per Pianta ---
+  // --- CRUD per Pianta (già presenti) ---
 
   Future<int> addPianta(Pianta pianta) async {
     final db = await database;
@@ -103,6 +102,124 @@ class DatabaseHelper {
     final db = await database;
     return await db.delete(
       'piante',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Metodi CRUD per Categoria
+
+  /// Inserisce una nuova categoria nel database.
+  Future<int> addCategoria(Categoria categoria) async {
+    final db = await database;
+    return await db.insert('categorie', categoria.toMap());
+  }
+
+  /// Recupera una singola categoria tramite il suo ID.
+  Future<Categoria?> getCategoria(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      'categorie',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return Categoria.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  /// Recupera tutte le categorie dal database.
+  Future<List<Categoria>> getAllCategorie() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('categorie');
+    return List.generate(maps.length, (i) => Categoria.fromMap(maps[i]));
+  }
+
+  /// Aggiorna una categoria esistente.
+  Future<int> updateCategoria(Categoria categoria) async {
+    final db = await database;
+    return await db.update(
+      'categorie',
+      categoria.toMap(),
+      where: 'id = ?',
+      whereArgs: [categoria.id],
+    );
+  }
+
+  /// Elimina una categoria tramite il suo ID.
+  /// Grazie a ON DELETE CASCADE, verranno eliminate anche tutte le specie
+  /// e le piante associate a questa categoria.
+  Future<int> deleteCategoria(int id) async {
+    final db = await database;
+    return await db.delete(
+      'categorie',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+
+  // Metodi CRUD per Specie
+
+  /// Inserisce una nuova specie nel database.
+  Future<int> addSpecie(Specie specie) async {
+    final db = await database;
+    return await db.insert('specie', specie.toMap());
+  }
+
+  /// Recupera una singola specie tramite il suo ID.
+  Future<Specie?> getSpecie(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      'specie',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return Specie.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  /// Recupera tutte le specie dal database.
+  Future<List<Specie>> getAllSpecie() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('specie');
+    return List.generate(maps.length, (i) => Specie.fromMap(maps[i]));
+  }
+
+  /// Recupera tutte le specie appartenenti a una determinata categoria.
+  /// Molto utile per i filtri nell'interfaccia utente.
+  Future<List<Specie>> getSpecieByCategoria(int idCategoria) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'specie',
+      where: 'idCategoria = ?',
+      whereArgs: [idCategoria],
+    );
+    return List.generate(maps.length, (i) => Specie.fromMap(maps[i]));
+  }
+
+
+  /// Aggiorna una specie esistente.
+  Future<int> updateSpecie(Specie specie) async {
+    final db = await database;
+    return await db.update(
+      'specie',
+      specie.toMap(),
+      where: 'id = ?',
+      whereArgs: [specie.id],
+    );
+  }
+
+  /// Elimina una specie tramite il suo ID.
+  /// Grazie a ON DELETE CASCADE, verranno eliminate anche tutte le piante
+  /// associate a questa specie.
+  Future<int> deleteSpecie(int id) async {
+    final db = await database;
+    return await db.delete(
+      'specie',
       where: 'id = ?',
       whereArgs: [id],
     );
