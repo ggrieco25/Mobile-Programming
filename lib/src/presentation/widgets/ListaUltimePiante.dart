@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/pianta_model.dart';
+import '../../data/models/PiantaModel.dart';
 
 class ListaUltimePiante extends StatelessWidget {
   final List<Pianta> piante;

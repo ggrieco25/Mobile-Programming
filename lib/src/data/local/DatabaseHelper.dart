@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../models/pianta_model.dart';
+import '../models/PiantaModel.dart';
 
 
 // --- DATABASE HELPER CORRETTO ---
