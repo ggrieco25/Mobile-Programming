@@ -19,10 +19,38 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     var batch = db.batch();
-    batch.execute('CREATE TABLE categorie(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL UNIQUE)');
-    batch.execute('CREATE TABLE specie(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL UNIQUE, descrizione TEXT, idCategoria INTEGER NOT NULL, FOREIGN KEY (idCategoria) REFERENCES categorie(id) ON DELETE CASCADE)');
-    batch.execute('CREATE TABLE piante(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, dataAcquisto TEXT NOT NULL, foto BLOB, frequenzaInnaffiatura INTEGER NOT NULL, frequenzaPotatura INTEGER NOT NULL, frequenzaRinvaso INTEGER NOT NULL, note TEXT, stato TEXT NOT NULL, idSpecie INTEGER NOT NULL, FOREIGN KEY (idSpecie) REFERENCES specie(id) ON DELETE CASCADE)');
-    batch.execute('CREATE TABLE attivitaCura(id INTEGER PRIMARY KEY AUTOINCREMENT, idPianta INTEGER NOT NULL, tipoAttivita TEXT NOT NULL, data TEXT NOT NULL, FOREIGN KEY (idPianta) REFERENCES piante(id) ON DELETE CASCADE)');
+    batch.execute(''
+        'CREATE TABLE categorie('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+          'nome TEXT NOT NULL UNIQUE)'
+        '');
+    batch.execute('''CREATE TABLE specie(
+      id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      nome TEXT NOT NULL UNIQUE, 
+      descrizione TEXT, 
+      idCategoria INTEGER NOT NULL, 
+      FOREIGN KEY (idCategoria) 
+      REFERENCES categorie(id) ON DELETE CASCADE)''');
+    batch.execute('''CREATE TABLE piante(
+      id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      nome TEXT NOT NULL, 
+      dataAcquisto TEXT NOT NULL, 
+      foto BLOB, 
+      frequenzaInnaffiatura INTEGER NOT NULL, 
+      frequenzaPotatura INTEGER NOT NULL, 
+      frequenzaRinvaso INTEGER NOT NULL, 
+      note TEXT, 
+      stato TEXT NOT NULL, 
+      idSpecie INTEGER NOT NULL, 
+      FOREIGN KEY (idSpecie) 
+      REFERENCES specie(id) ON DELETE CASCADE)''');
+    batch.execute('''CREATE TABLE attivitaCura(
+      id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      idPianta INTEGER NOT NULL, 
+      tipoAttivita TEXT NOT NULL, 
+      data TEXT NOT NULL, 
+      FOREIGN KEY (idPianta) 
+      REFERENCES piante(id) ON DELETE CASCADE)''');
     await batch.commit(noResult: true);
   }
 
