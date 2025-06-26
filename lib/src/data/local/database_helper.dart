@@ -24,8 +24,6 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    // Usiamo un batch per eseguire tutte le creazioni in una singola transazione.
-    // È più sicuro e performante.
     var batch = db.batch();
 
     batch.execute('''
@@ -44,8 +42,7 @@ class DatabaseHelper {
         FOREIGN KEY (idCategoria) REFERENCES categorie(id) ON DELETE CASCADE
       )
     ''');
-    
-    // Corretta la tabella `piante` per usare BLOB e nomi consistenti
+
     batch.execute('''
       CREATE TABLE piante (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,40 +58,41 @@ class DatabaseHelper {
         FOREIGN KEY (idSpecie) REFERENCES specie(id) ON DELETE CASCADE
       )
     ''');
-    
-    await batch.commit(noResult: true); // Eseguiamo tutte le operazioni
+
+    await batch.commit(noResult: true);
   }
 
   // --- CRUD per Pianta ---
+
   Future<int> addPianta(Pianta pianta) async {
-    Database db = await instance.database;
-    // Uso il nome tabella corretto: 'piante'
+    final db = await database;
     return await db.insert('piante', pianta.toMap());
   }
 
   Future<Pianta?> getPianta(int id) async {
-    Database db = await instance.database;
-    List<Map<String, dynamic>> maps = await db.query(
-      'piante', // Nome tabella corretto
+    final db = await database;
+    final maps = await db.query(
+      'piante',
       where: 'id = ?',
       whereArgs: [id],
     );
+
     if (maps.isNotEmpty) {
       return Pianta.fromMap(maps.first);
     }
     return null;
   }
-  
+
   Future<List<Pianta>> getAllPiante() async {
-    Database db = await instance.database;
-    final List<Map<String, dynamic>> maps = await db.query('piante'); // Nome tabella corretto
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('piante');
     return List.generate(maps.length, (i) => Pianta.fromMap(maps[i]));
   }
 
   Future<int> updatePianta(Pianta pianta) async {
-    Database db = await instance.database;
+    final db = await database;
     return await db.update(
-      'piante', // Nome tabella corretto
+      'piante',
       pianta.toMap(),
       where: 'id = ?',
       whereArgs: [pianta.id],
@@ -102,9 +100,9 @@ class DatabaseHelper {
   }
 
   Future<int> deletePianta(int id) async {
-    Database db = await instance.database;
+    final db = await database;
     return await db.delete(
-      'piante', // Nome tabella corretto
+      'piante',
       where: 'id = ?',
       whereArgs: [id],
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/pianta_model.dart';
+import '../../data/models/PiantaModel.dart';
 
 class ListaUltimePiante extends StatelessWidget {
   final List<Pianta> piante;
@@ -17,34 +17,28 @@ class ListaUltimePiante extends StatelessWidget {
       itemCount: pianteOrdinate.length,
       itemBuilder: (context, index) {
         final pianta = pianteOrdinate[index];
-
-        Widget leadingWidget;
-        if (pianta.foto != null && pianta.foto!.isNotEmpty) {
-          leadingWidget = ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Image.memory(
-              pianta.foto!,
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
-            ),
-          );
-        } else {
-          leadingWidget = const Icon(Icons.local_florist, size: 40);
-        }
-
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: ListTile(
-            leading: leadingWidget,
+            leading: pianta.foto != null
+                ? ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.memory(
+                pianta.foto!,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+            )
+                : const Icon(Icons.local_florist),
             title: Text(pianta.nome),
-            subtitle: Text('${pianta.idSpecie} • ${pianta.stato}'),
+            subtitle: Text('${pianta.specie} • ${pianta.stato}'),
             trailing: Text(
               '${pianta.dataAcquisto.day.toString().padLeft(2, '0')}/${pianta.dataAcquisto.month.toString().padLeft(2, '0')}/${pianta.dataAcquisto.year}',
               style: const TextStyle(fontSize: 12),
             ),
             onTap: () {
-              // TODO: Navigazione ai dettagli della pianta
+              // Vai ai dettagli della pianta
             },
           ),
         );
