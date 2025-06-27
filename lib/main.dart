@@ -10,7 +10,7 @@ void main() async {
   // Inizializzazione del database per desktop
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     sqfliteFfiInit(); // Inizializza FFI per desktop
-    databaseFactory = databaseFactoryFfi; // Imposta la factory FFI per sqflite
+    databaseFactory = databaseFactoryFfi;
   }
 
   runApp(const PlantCareApp());
