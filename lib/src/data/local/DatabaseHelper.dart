@@ -24,6 +24,7 @@ class DatabaseHelper {
           'id INTEGER PRIMARY KEY AUTOINCREMENT, '
           'nome TEXT NOT NULL UNIQUE)'
         '');
+
     batch.execute('''CREATE TABLE specie(
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
       nome TEXT NOT NULL UNIQUE, 
@@ -31,6 +32,7 @@ class DatabaseHelper {
       idCategoria INTEGER NOT NULL, 
       FOREIGN KEY (idCategoria) 
       REFERENCES categorie(id) ON DELETE CASCADE)''');
+
     batch.execute('''CREATE TABLE piante(
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
       nome TEXT NOT NULL, 
@@ -44,6 +46,7 @@ class DatabaseHelper {
       idSpecie INTEGER NOT NULL, 
       FOREIGN KEY (idSpecie) 
       REFERENCES specie(id) ON DELETE CASCADE)''');
+      
     batch.execute('''CREATE TABLE attivitaCura(
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
       idPianta INTEGER NOT NULL, 
@@ -54,7 +57,7 @@ class DatabaseHelper {
     await batch.commit(noResult: true);
   }
 
-  // --- CRUD per Pianta (già presenti) ---
+  // Operazioni CRUD per Pianta 
 
   Future<int> addPianta(Pianta pianta) async {
     final db = await database;
