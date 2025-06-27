@@ -4,7 +4,10 @@ import '../../data/models/PiantaModel.dart';
 class ListaUltimePiante extends StatelessWidget {
   final List<Pianta> piante;
 
-  const ListaUltimePiante({super.key, required this.piante});
+  const ListaUltimePiante({
+    super.key,
+    required this.piante
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -4,64 +4,60 @@ import 'package:sqflite/sqflite.dart';
 import '../models/PiantaModel.dart';
 import '../models/SpecieModel.dart';
 import '../models/CategoriaModel.dart';
+import '../models/AttivitaCuraModel.dart';
 
 class DatabaseHelper {
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
-
   static Database? _database;
   Future<Database> get database async => _database ??= await _initDB();
 
   Future<Database> _initDB() async {
-    String path = join(await getDatabasesPath(), 'plant_care_v2.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-      onConfigure: (db) async => await db.execute('PRAGMA foreign_keys = ON'),
-    );
+    String path = join(await getDatabasesPath(), 'plant_care_v3.db');
+    return await openDatabase(path, version: 1, onCreate: _onCreate, onConfigure: (db) async => await db.execute('PRAGMA foreign_keys = ON'));
   }
 
   Future _onCreate(Database db, int version) async {
     var batch = db.batch();
+    batch.execute(''
+        'CREATE TABLE categorie('
+          'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+          'nome TEXT NOT NULL UNIQUE)'
+        '');
 
-    batch.execute('''
-      CREATE TABLE categorie (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE
-      )
-    ''');
+    batch.execute('''CREATE TABLE specie(
+      id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      nome TEXT NOT NULL UNIQUE, 
+      descrizione TEXT, 
+      idCategoria INTEGER NOT NULL, 
+      FOREIGN KEY (idCategoria) 
+      REFERENCES categorie(id) ON DELETE CASCADE)''');
 
-    batch.execute('''
-      CREATE TABLE specie (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE,
-        descrizione TEXT,
-        idCategoria INTEGER NOT NULL,
-        FOREIGN KEY (idCategoria) REFERENCES categorie(id) ON DELETE CASCADE
-      )
-    ''');
-
-    batch.execute('''
-      CREATE TABLE piante (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        dataAcquisto TEXT NOT NULL,
-        foto BLOB,
-        frequenzaInnaffiatura INTEGER NOT NULL,
-        frequenzaPotatura INTEGER NOT NULL,
-        frequenzaRinvaso INTEGER NOT NULL,
-        note TEXT,
-        stato TEXT NOT NULL,
-        idSpecie INTEGER NOT NULL,
-        FOREIGN KEY (idSpecie) REFERENCES specie(id) ON DELETE CASCADE
-      )
-    ''');
-
+    batch.execute('''CREATE TABLE piante(
+      id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      nome TEXT NOT NULL, 
+      dataAcquisto TEXT NOT NULL, 
+      foto BLOB, 
+      frequenzaInnaffiatura INTEGER NOT NULL, 
+      frequenzaPotatura INTEGER NOT NULL, 
+      frequenzaRinvaso INTEGER NOT NULL, 
+      note TEXT, 
+      stato TEXT NOT NULL, 
+      idSpecie INTEGER NOT NULL, 
+      FOREIGN KEY (idSpecie) 
+      REFERENCES specie(id) ON DELETE CASCADE)''');
+      
+    batch.execute('''CREATE TABLE attivitaCura(
+      id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      idPianta INTEGER NOT NULL, 
+      tipoAttivita TEXT NOT NULL, 
+      data TEXT NOT NULL, 
+      FOREIGN KEY (idPianta) 
+      REFERENCES piante(id) ON DELETE CASCADE)''');
     await batch.commit(noResult: true);
   }
 
-  // --- CRUD per Pianta (già presenti) ---
+  // Operazioni CRUD per Pianta 
 
   Future<int> addPianta(Pianta pianta) async {
     final db = await database;
@@ -223,5 +219,26 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+  
+  // Aggiungiamo il CRUD per AttivitaCura.
+  Future<int> addAttivitaCura(AttivitaCura attivita) async {
+    final db = await database;
+    return await db.insert('attivitaCura', attivita.toMap());
+  }
+
+  Future<DateTime?> getUltimaAttivita(int idPianta, String tipoAttivita) async {
+    final db = await database;
+    final maps = await db.query(
+      'attivitaCura',
+      where: 'idPianta = ? AND tipoAttivita = ?',
+      whereArgs: [idPianta, tipoAttivita],
+      orderBy: 'data DESC',
+      limit: 1,
+    );
+    if(maps.isNotEmpty) {
+      return DateTime.parse(maps.first['data'] as String);
+    }
+    return null;
   }
 }

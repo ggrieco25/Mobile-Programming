@@ -13,10 +13,10 @@ class CustomNavBar extends StatelessWidget {
         Navigator.pushReplacementNamed(context, '/home');
         break;
       case 1:
-        Navigator.pushReplacementNamed(context, '/discover');
+        Navigator.pushReplacementNamed(context, '/piante');
         break;
       case 2:
-        Navigator.pushReplacementNamed(context, '/watchlist');
+        Navigator.pushReplacementNamed(context, '/analitica');
         break;
     }
   }
@@ -28,11 +28,12 @@ class CustomNavBar extends StatelessWidget {
       onTap: (index) => _onTap(context, index),
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Scopri'),
-        BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Watchlist'),
+        BottomNavigationBarItem(icon: Icon(Icons.local_florist_rounded), label: 'Piante'),
+        BottomNavigationBarItem(icon: Icon(Icons.view_kanban_outlined), label: 'Analitica'),
       ],
-      selectedItemColor: Colors.deepPurple, // Personalizzabile
+      selectedItemColor: const Color.fromARGB(251, 56, 145, 62),
       unselectedItemColor: Colors.grey,
+      backgroundColor: Color.fromARGB(255, 221, 252, 221),
     );
   }
 }
