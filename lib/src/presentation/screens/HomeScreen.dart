@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:progetto_mp/src/presentation/screens/AggiungiPiantaScreen.dart';
 import '../../data/models/PromemoriaModel.dart';
 import '../../domain/PromemoriaRepository.dart';
 import '../../data/models/PiantaModel.dart';
@@ -16,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Un'istanza del repository.
   final PromemoriaRepository _promemoriaRepository = PromemoriaRepository();
-  final PiantaRepository _piantaRepository = PiantaRepository();
+  final PianteRepository _piantaRepository = PianteRepository();
 
   late Future<List<Promemoria>> _futurePromemoria;
   List<Pianta> piante = [];
@@ -53,12 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: const CustomNavBar(currentIndex: 0),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          /* Da implementare
-          final result = await Navigator.push(); // Vai alla schermata di aggiunta
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AggiungiPiantaScreen()),
+          );// Vai alla schermata di aggiunta
           if (result == true) {
             caricaPiante(); // Ricarica solo se è stata aggiunta una pianta
           }
-          */
         },
 
         label: const Text('Aggiungi Pianta'),
