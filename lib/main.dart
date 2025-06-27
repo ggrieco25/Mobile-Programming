@@ -1,7 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 import 'src/presentation/screens/HomeScreen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inizializzazione del database per desktop
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    sqfliteFfiInit(); // Inizializza FFI per desktop
+    databaseFactory = databaseFactoryFfi; // Imposta la factory FFI per sqflite
+  }
+
   runApp(const PlantCareApp());
 }
 
