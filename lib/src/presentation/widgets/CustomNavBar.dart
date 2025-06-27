@@ -31,7 +31,7 @@ class CustomNavBar extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Scopri'),
         BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Watchlist'),
       ],
-      selectedItemColor: Colors.deepPurple, // Personalizzabile
+      selectedItemColor: Color.fromARGB(255, 104, 181, 16), // Personalizzabile
       unselectedItemColor: Colors.grey,
     );
   }
