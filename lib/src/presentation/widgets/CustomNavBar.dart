@@ -31,7 +31,11 @@ class CustomNavBar extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.local_florist_rounded), label: 'Piante'),
         BottomNavigationBarItem(icon: Icon(Icons.view_kanban_outlined), label: 'Analitica'),
       ],
+<<<<<<< HEAD
       selectedItemColor: const Color.fromARGB(251, 56, 145, 62), // Personalizzabile
+=======
+      selectedItemColor: Color.fromARGB(255, 104, 181, 16), // Personalizzabile
+>>>>>>> d25414e6649e84362f0e9cc3a0e9457958ceb919
       unselectedItemColor: Colors.grey,
       backgroundColor: Color.fromARGB(255, 221, 252, 221),
     );
